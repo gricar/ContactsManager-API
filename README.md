@@ -11,17 +11,3 @@
   - **Atualização e exclusão**: possibilitar a atualização e exclusão de contatos previamente cadastrados.
    
 </details>
-
-<details>
-  <summary><strong>Executando o projeto</strong></summary>
-
-  - É necessário ter o `Docker` e o [`Docker Compose`](https://docs.docker.com/compose) instalado em sua máquina.
-
-  - Clone o projeto: `git clone https://github.com/gricar/ContactManager-API.git`.
-
-  - Entre na pasta do projeto: `cd ContactsManagement`.
-
-  - Restaure as dependências: `dotnet restore`.
-  
-  - Entre na pasta do projeto: `cd Database` e execute o **script** para iniciar o Docker Compose: `docker-compose up -d --build`.
-</details>
