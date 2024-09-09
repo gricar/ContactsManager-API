@@ -1,4 +1,4 @@
-# Contact Manager API
+# Contacts Manager API
 
 ### Descrição
 > É uma API Web desenvolvida em ASP.NET Core para gerenciar contatos com funcionalidades de cadastro, consulta, atualização e exclusão de contatos, utilizando boas práticas de arquitetura e testes automatizados.
