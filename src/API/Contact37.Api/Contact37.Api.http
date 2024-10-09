@@ -1,6 +1,0 @@
-@Contact37.Api_HostAddress = http://localhost:5116
-
-GET {{Contact37.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
