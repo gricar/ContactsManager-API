@@ -4,8 +4,8 @@ using Contacts37.Application;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .ConfigureApplicationServices()
-    .ConfigurePersistenceServices(builder.Configuration);
+        .ConfigurePersistenceServices(builder.Configuration)
+        .ConfigureApplicationServices();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
