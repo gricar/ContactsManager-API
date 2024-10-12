@@ -14,9 +14,15 @@ namespace Contact37.Persistence
             options.UseSqlServer(
                 configuration.GetConnectionString("Contact37ConnectionString")));
 
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddRepositories();
 
             return services;
+        }
+
+        private static void AddRepositories(this IServiceCollection services)
+        {
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IContactRepository, ContactRepository>();
         }
     }
 }

@@ -12,7 +12,6 @@ namespace Contacts37.Application
 
             //MediatR - Dependency Injection
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
             return services;
         }
     }

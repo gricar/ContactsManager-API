@@ -1,4 +1,5 @@
 ﻿using Contacts37.Domain.Common;
+using Contacts37.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Contact37.Persistence
@@ -9,6 +10,7 @@ namespace Contact37.Persistence
         {
         }
 
+        public DbSet<Contact> Contacts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
@@ -20,9 +22,9 @@ namespace Contact37.Persistence
         {
             foreach (var entry in ChangeTracker.Entries<BaseDomainEntity>())
             {
-                entry.Entity.ModifiedAt = DateTime.Now;
+                entry.Entity.ModifiedAt = DateTime.UtcNow;
                 if (entry.State == EntityState.Added)
-                    entry.Entity.CreatedAt = DateTime.Now;
+                    entry.Entity.CreatedAt = DateTime.UtcNow;
             }
             return base.SaveChangesAsync(cancellationToken);
         }
