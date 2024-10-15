@@ -20,7 +20,8 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.CreateContact
                 .WithMessage("Phone must be 9 numeric digits.");
 
             RuleFor(c => c.Email)
-                .EmailAddress();
+                .EmailAddress()
+                .WithMessage("Email must be a valid format.");
         }
     }
 }
