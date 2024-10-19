@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Contact37.Persistence.Configurations
+namespace Contacts37.Persistence.Configurations
 {
     public class ContactConfiguration : IEntityTypeConfiguration<Contact>
     {
@@ -26,6 +26,9 @@ namespace Contact37.Persistence.Configurations
             builder.Property(c => c.Email)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder.HasIndex(c => c.Email)
+                .IsUnique();
         }
     }
 }
