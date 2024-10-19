@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Contact37.Persistence\Contact37.Persistence.csproj" />
+    <ProjectReference Include="..\Contact37.Persistence\Contacts37.Persistence.csproj" />
     <ProjectReference Include="..\Contacts37.Application\Contacts37.Application.csproj" />
   </ItemGroup>
 

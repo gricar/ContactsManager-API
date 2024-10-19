@@ -1,5 +1,6 @@
-using Contact37.Persistence;
-using Contacts37.Application;
+using Contacts37.API.Middlewares;
+using Contacts37.Application.DependencyInjection;
+using Contacts37.Persistence.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
