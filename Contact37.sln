@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contacts37.Application", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contacts37.Domain", "Contacts37.Domain\Contacts37.Domain.csproj", "{26705B74-2BDA-4CE1-B353-EF51973F86D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contact37.Persistence", "Contact37.Persistence\Contact37.Persistence.csproj", "{653261DA-B9BD-48A4-B0A7-0517AE8D77A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contacts37.Persistence", "Contact37.Persistence\Contacts37.Persistence.csproj", "{653261DA-B9BD-48A4-B0A7-0517AE8D77A2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contacts37.API", "Contacts37.API\Contacts37.API.csproj", "{F738FCAC-569A-4C0A-9E81-1B2F6901E8D3}"
 EndProject
