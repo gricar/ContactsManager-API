@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Contacts37.Domain.Entities;
 
-namespace Contacts37.Application.Usecases.Contacts.Commands.CreateContact
+namespace Contacts37.Application.Usecases.Contacts.Commands.Create
 {
     public sealed class CreateContactMapper : Profile
     {

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Contacts37.Application.Usecases.Contacts.Commands.CreateContact
+namespace Contacts37.Application.Usecases.Contacts.Commands.Create
 {
     public sealed record CreateContactCommand(
         string Name,

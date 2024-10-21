@@ -1,7 +1,7 @@
 ﻿using Contacts37.Application.Contracts.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Contact37.Persistence.Repositories
+namespace Contacts37.Persistence.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {

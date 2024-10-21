@@ -2,7 +2,7 @@
 using Contacts37.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Contact37.Persistence
+namespace Contacts37.Persistence
 {
     public class ApplicationDbContext : DbContext
     {

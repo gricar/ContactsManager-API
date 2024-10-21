@@ -1,10 +1,10 @@
-﻿using Contact37.Persistence.Repositories;
+﻿using Contacts37.Persistence.Repositories;
 using Contacts37.Application.Contracts.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Contact37.Persistence
+namespace Contacts37.Persistence.DependencyInjection
 {
     public static class PersistenceServicesRegistration
     {
