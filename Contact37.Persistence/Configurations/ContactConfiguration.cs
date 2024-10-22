@@ -16,16 +16,14 @@ namespace Contacts37.Persistence.Configurations
                 .HasMaxLength(100);
 
             builder.Property(c => c.DddCode)
-                .IsRequired()
-                .HasMaxLength(2);
+                .IsRequired();
 
             builder.Property(c => c.Phone)
                 .IsRequired()
                 .HasMaxLength(9);
 
             builder.Property(c => c.Email)
-                .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(200);
 
             builder.HasIndex(c => c.Email)
                 .IsUnique();
