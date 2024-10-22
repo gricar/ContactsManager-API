@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Contacts37.Application.Common.Exceptions;
 using Contacts37.Application.Contracts.Persistence;
 using Contacts37.Domain.Entities;
 using MediatR;
@@ -17,9 +18,14 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Create
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<CreateContactCommandResponse> Handle(CreateContactCommand request, CancellationToken cancellationToken)
+        public async Task<CreateContactCommandResponse> Handle(CreateContactCommand command, CancellationToken cancellationToken)
         {
-            var contact = _mapper.Map<Contact>(request);
+            var isUnique = await _contactRepository.IsDddAndPhoneUniqueAsync(command.DDDCode, command.Phone);
+
+            if (!isUnique)
+                throw new BadRequestException("A contact with the same DDD code and phone number already exists.");
+            
+            var contact = _mapper.Map<Contact>(command);
 
             await _contactRepository.AddAsync(contact);
 
