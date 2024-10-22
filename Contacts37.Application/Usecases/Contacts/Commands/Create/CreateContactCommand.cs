@@ -4,9 +4,9 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Create
 {
     public sealed record CreateContactCommand(
         string Name,
-        string DDDCode,
+        int DDDCode,
         string Phone,
-        string Email
+        string? Email = null
         ) : IRequest<CreateContactCommandResponse>
     {
     }

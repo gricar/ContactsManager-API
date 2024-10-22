@@ -1,8 +1,8 @@
 ﻿using Contacts37.Application.Common.Behaviors;
+using Contacts37.Domain.Specifications;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace Contacts37.Application.DependencyInjection
 {
@@ -12,13 +12,15 @@ namespace Contacts37.Application.DependencyInjection
         {
             var assembly = typeof(ApplicationServicesRegistration).Assembly;
 
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(assembly);
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
 
             services.AddValidatorsFromAssembly(assembly);
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+            services.AddScoped<IRegionValidator, RegionValidator>();
 
             return services;
         }

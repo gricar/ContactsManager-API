@@ -18,10 +18,11 @@ namespace Contacts37.API.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(Guid), Status201Created)]
-        public async Task<ActionResult<Guid>> PostConctact([FromBody] CreateContactCommand command)
+        [ProducesResponseType(Status400BadRequest)]
+        public async Task<ActionResult<Guid>> PostContact([FromBody] CreateContactCommand command)
         {
             var response = await _dispatcher.Send(command);
-            return Ok(response);
+            return CreatedAtAction(nameof(PostContact), new { id = response.Id }, response.Id);
         }
     }
 }
