@@ -29,9 +29,9 @@ namespace Contacts37.API.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(GetAllContactsResponse), Status200OK)]
         [ProducesResponseType(Status400BadRequest)]
-        public async Task<ActionResult<GetAllContactsResponse>> ListAllContacts(GetAllContactsRequest request)
+        public async Task<ActionResult<GetAllContactsResponse>> ListAllContacts()
         {
-            var response = await _dispatcher.Send(request);
+            var response = await _dispatcher.Send(new GetAllContactsRequest());
             return Ok(response);
         }
     }
