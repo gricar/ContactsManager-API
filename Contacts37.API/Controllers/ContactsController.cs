@@ -2,6 +2,7 @@
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 using Contacts37.Application.Usecases.Contacts.Commands.Create;
+using Contacts37.Application.Usecases.Contacts.Queries.GetAll;
 
 namespace Contacts37.API.Controllers
 {
@@ -17,12 +18,21 @@ namespace Contacts37.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Guid), Status201Created)]
+        [ProducesResponseType(typeof(CreateContactCommandResponse), Status201Created)]
         [ProducesResponseType(Status400BadRequest)]
         public async Task<ActionResult<Guid>> PostContact([FromBody] CreateContactCommand command)
         {
             var response = await _dispatcher.Send(command);
             return CreatedAtAction(nameof(PostContact), new { id = response.Id }, response.Id);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(GetAllContactsResponse), Status200OK)]
+        [ProducesResponseType(Status400BadRequest)]
+        public async Task<ActionResult<GetAllContactsResponse>> ListAllContacts()
+        {
+            var response = await _dispatcher.Send(new GetAllContactsRequest());
+            return Ok(response);
         }
     }
 }

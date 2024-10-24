@@ -18,6 +18,7 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Create
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
+
         public async Task<CreateContactCommandResponse> Handle(CreateContactCommand command, CancellationToken cancellationToken)
         {
             var isUnique = await _contactRepository.IsDddAndPhoneUniqueAsync(command.DDDCode, command.Phone);
