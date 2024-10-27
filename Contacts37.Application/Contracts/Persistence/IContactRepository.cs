@@ -6,5 +6,6 @@ namespace Contacts37.Application.Contracts.Persistence
     {
         Task<bool> IsEmailUniqueAsync(string email);
         Task<bool> IsDddAndPhoneUniqueAsync(int ddd, string phone);
+        Task<IEnumerable<Contact>> GetContactsDddCode(int dddCode);
     }
 }

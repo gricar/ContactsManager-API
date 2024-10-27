@@ -27,11 +27,20 @@ namespace Contacts37.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(GetAllContactsResponse), Status200OK)]
+        [ProducesResponseType(typeof(GetContactsForDddResponse), Status200OK)]
         [ProducesResponseType(Status400BadRequest)]
-        public async Task<ActionResult<GetAllContactsResponse>> ListAllContacts()
+        public async Task<ActionResult<GetContactsForDddResponse>> ListAllContacts()
         {
             var response = await _dispatcher.Send(new GetAllContactsRequest());
+            return Ok(response);
+        }
+
+        [HttpGet("{DddCode}")]
+        [ProducesResponseType(typeof(GetContactsForDddResponse), Status200OK)]
+        [ProducesResponseType(Status400BadRequest)]
+        public async Task<ActionResult<GetContactsForDddResponse>> ListContactsForDdd(int DddCode)
+        {
+            var response = await _dispatcher.Send(new GetContactsForDddRequest(DddCode));
             return Ok(response);
         }
     }
