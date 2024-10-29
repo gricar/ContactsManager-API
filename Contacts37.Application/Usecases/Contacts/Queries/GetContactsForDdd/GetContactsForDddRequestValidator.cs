@@ -1,10 +1,17 @@
-﻿using Contacts37.Application.Usecases.Contacts.Queries.GetAll;
+﻿using Contacts37.Application.Contracts.Persistence;
+using Contacts37.Application.Usecases.Contacts.Queries.GetAll;
+using Contacts37.Domain.Specifications;
 using FluentValidation;
 
 public class GetContactsForDddRequestValidator : AbstractValidator<GetContactsForDddRequest>
 {
-    public GetContactsForDddRequestValidator()
+    private readonly IRegionValidator _regionValidator;
+
+    public GetContactsForDddRequestValidator(
+            IRegionValidator regionValidator)
     {
+        _regionValidator = regionValidator;
+
         RuleFor(c => c.DddCode)
             .NotEmpty().WithMessage("DDD code is required")
             .Must(code => code >= 10 && code <= 99)
@@ -13,10 +20,5 @@ public class GetContactsForDddRequestValidator : AbstractValidator<GetContactsFo
             .WithMessage("DDDCode does not exist in any registered region.");
     }
 
-    private bool BeValidRegion(int dddCode)
-    {
-        // Verifica se o código DDD existe na lista de regiões válidas
-        var validRegions = new List<int> { 11, 21, 31, 41 }; // Exemplo de códigos válidos
-        return validRegions.Contains(dddCode);
-    }
+    private bool BeValidRegion(int dddCode) => _regionValidator.IsValid(dddCode);
 }

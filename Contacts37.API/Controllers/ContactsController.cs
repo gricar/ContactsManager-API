@@ -3,6 +3,7 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 using Contacts37.Application.Usecases.Contacts.Commands.Create;
 using Contacts37.Application.Usecases.Contacts.Queries.GetAll;
+using Azure.Core;
 
 namespace Contacts37.API.Controllers
 {
@@ -27,20 +28,20 @@ namespace Contacts37.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(GetContactsForDddResponse), Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<GetAllContactsResponse>), Status200OK)]
         [ProducesResponseType(Status400BadRequest)]
-        public async Task<ActionResult<GetContactsForDddResponse>> ListAllContacts()
+        public async Task<ActionResult<IEnumerable<GetAllContactsResponse>>> ListAllContacts()
         {
             var response = await _dispatcher.Send(new GetAllContactsRequest());
             return Ok(response);
         }
 
         [HttpGet("{DddCode}")]
-        [ProducesResponseType(typeof(GetContactsForDddResponse), Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<GetContactsForDddResponse>), Status200OK)]
         [ProducesResponseType(Status400BadRequest)]
-        public async Task<ActionResult<GetContactsForDddResponse>> ListContactsForDdd(int DddCode)
+        public async Task<ActionResult<IEnumerable<GetContactsForDddResponse>>> ListContactsByDdd([FromRoute] GetContactsForDddRequest request)
         {
-            var response = await _dispatcher.Send(new GetContactsForDddRequest(DddCode));
+            var response = await _dispatcher.Send(request);
             return Ok(response);
         }
     }
