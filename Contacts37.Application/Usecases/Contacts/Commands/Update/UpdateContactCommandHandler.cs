@@ -13,19 +13,16 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
 
         public UpdateContactCommandHandler(IContactRepository contactRepository, IMapper mapper)
         {
-            _contactRepository = contactRepository;
-            _mapper = mapper;
+            _contactRepository = contactRepository ?? throw new ArgumentNullException(nameof(contactRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<Unit> Handle(UpdateContactCommand command, CancellationToken cancellationToken)
         {
-            var existingUser = await _contactRepository.GetAsync(command.Id);
+            var existingUser = await _contactRepository.GetAsync(command.Id)
+                ?? throw new ArgumentException("Contact not found");
 
-            if (existingUser is null)
-                throw new ArgumentException("Contact not found");
-
-            await validateUserPhone(command, existingUser);
-            await validateUserEmail(command.Email!, existingUser.Email!);
+            await ValidateContactAsync(command, existingUser);
 
             _mapper.Map(command, existingUser);
 
@@ -34,33 +31,40 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
             return new Unit();
         }
 
-        private async Task<bool> validateUserPhone(UpdateContactCommand command, Contact existingUser)
+        private async Task ValidateContactAsync(UpdateContactCommand command, Contact existingUser)
         {
-            var phoneChanged = command.DDDCode == existingUser.DddCode &&
-                command.Phone == existingUser.Phone;
+            if (HasPhoneChanged(command, existingUser))
+            {
+                await ValidatePhoneIsUniqueAsync(command.DDDCode, command.Phone);
+            }
 
-            if (phoneChanged) return false;
-
-            var isUnique = await _contactRepository.IsDddAndPhoneUniqueAsync(command.DDDCode, command.Phone);
-
-            if (!isUnique)
-                throw new BadRequestException("A contact with the same DDD code and phone number already exists.");
-
-            return true;
+            if (HasEmailChanged(command.Email!, existingUser.Email!))
+            {
+                await ValidateEmailIsUniqueAsync(command.Email!);
+            }
         }
 
-        private async Task<bool> validateUserEmail(string email, string existingUserEmail)
+        private bool HasPhoneChanged(UpdateContactCommand command, Contact existingUser) =>
+            command.DDDCode != existingUser.DddCode ||
+            command.Phone != existingUser.Phone;
+
+        private bool HasEmailChanged(string newEmail, string existingEmail) =>
+            !string.Equals(newEmail, existingEmail, StringComparison.OrdinalIgnoreCase);
+
+        private async Task ValidatePhoneIsUniqueAsync(int dddCode, string phone)
         {
-            var emailChanged = email == existingUserEmail;
+            if (!await _contactRepository.IsDddAndPhoneUniqueAsync(dddCode, phone))
+            {
+                throw new BadRequestException("A contact with the same DDD code and phone number already exists.");
+            }
+        }
 
-            if (emailChanged) return false;
-
-            var isUnique = await _contactRepository.IsEmailUniqueAsync(email);
-
-            if (!isUnique)
+        private async Task ValidateEmailIsUniqueAsync(string email)
+        {
+            if (!await _contactRepository.IsEmailUniqueAsync(email))
+            {
                 throw new BadRequestException("Email already registered.");
-
-            return true;
+            }
         }
     }
 }
