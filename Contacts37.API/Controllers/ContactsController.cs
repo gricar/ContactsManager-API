@@ -3,6 +3,7 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 using Contacts37.Application.Usecases.Contacts.Commands.Create;
 using Contacts37.Application.Usecases.Contacts.Queries.GetAll;
+using Contacts37.Application.Usecases.Contacts.Commands.Update;
 
 namespace Contacts37.API.Controllers
 {
@@ -33,6 +34,16 @@ namespace Contacts37.API.Controllers
         {
             var response = await _dispatcher.Send(new GetAllContactsRequest());
             return Ok(response);
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(Status204NoContent)]
+        [ProducesResponseType(Status400BadRequest)]
+        [ProducesResponseType(Status404NotFound)]
+        public async Task<ActionResult<Unit>> UpdateUser([FromRoute] Guid id, [FromBody] UpdateContactCommand command)
+        {
+            var response = await _dispatcher.Send(command);
+            return NoContent();
         }
     }
 }
