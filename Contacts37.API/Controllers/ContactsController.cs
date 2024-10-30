@@ -2,6 +2,8 @@
 using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 using Contacts37.Application.Usecases.Contacts.Commands.Create;
+using Contacts37.Application.Usecases.Contacts.Queries.GetAll;
+using Contacts37.Application.Usecases.Contacts.Commands.Update;
 
 namespace Contacts37.API.Controllers
 {
@@ -17,7 +19,7 @@ namespace Contacts37.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Guid), Status201Created)]
+        [ProducesResponseType(typeof(CreateContactCommandResponse), Status201Created)]
         [ProducesResponseType(Status400BadRequest)]
         public async Task<ActionResult<Guid>> PostContact([FromBody] CreateContactCommand command)
         {
@@ -25,19 +27,23 @@ namespace Contacts37.API.Controllers
             return CreatedAtAction(nameof(PostContact), new { id = response.Id }, response.Id);
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(GetAllContactsResponse), Status200OK)]
+        [ProducesResponseType(Status400BadRequest)]
+        public async Task<ActionResult<GetAllContactsResponse>> ListAllContacts()
+        {
+            var response = await _dispatcher.Send(new GetAllContactsRequest());
+            return Ok(response);
+        }
 
-        // Método PUT para alterar os dados de um contato.
         [HttpPut("{id}")]
         [ProducesResponseType(Status204NoContent)]
         [ProducesResponseType(Status400BadRequest)]
         [ProducesResponseType(Status404NotFound)]
-        // UpdateUserCommand deve conter os dados necessários para atualização
-        public async Task<ActionResult<Guid>> UpdateUser(int id, [FromBody] UpdateUserCommand command)
+        public async Task<ActionResult<Unit>> UpdateUser([FromRoute] Guid id, [FromBody] UpdateContactCommand command)
         {
-            // Verificação de ID
             var response = await _dispatcher.Send(command);
             return NoContent();
-
         }
     }
 }

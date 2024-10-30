@@ -15,6 +15,9 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
             _contactRepository = contactRepository;
             _regionValidator = regionValidator;
 
+            RuleFor(c => c.Id)
+                .NotEmpty();
+
             RuleFor(c => c.Name)
                 .NotEmpty().WithMessage("Name is required.");
 
@@ -30,15 +33,10 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
                 .Matches(@"^\d{9}$").WithMessage("Phone number must be 9 numeric digits.");
 
             RuleFor(c => c.Email)
-                .EmailAddress().When(x => !string.IsNullOrEmpty(x.Email)).WithMessage("Email must be a valid format.")
-                .MustAsync(BeUniqueEmail).When(x => !string.IsNullOrEmpty(x.Email)).WithMessage("Email already registered.");
+                .EmailAddress().When(x => !string.IsNullOrEmpty(x.Email)).WithMessage("Email must be a valid format.");
         }
 
         private bool BeValidRegion(int dddCode) => _regionValidator.IsValid(dddCode);
 
-        private async Task<bool> BeUniqueEmail(string email, CancellationToken cancellationToken)
-        {
-            return await _contactRepository.IsEmailUniqueAsync(email);
-        }
     }
 }
