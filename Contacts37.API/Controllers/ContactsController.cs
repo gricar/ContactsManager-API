@@ -3,7 +3,7 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 using Contacts37.Application.Usecases.Contacts.Commands.Create;
 using Contacts37.Application.Usecases.Contacts.Queries.GetAll;
-using Azure.Core;
+using Contacts37.Application.Usecases.Contacts.Queries.GetByDdd;
 
 namespace Contacts37.API.Controllers
 {
@@ -37,9 +37,9 @@ namespace Contacts37.API.Controllers
         }
 
         [HttpGet("{DddCode}")]
-        [ProducesResponseType(typeof(IEnumerable<GetContactsForDddResponse>), Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<GetContactsByDddResponse>), Status200OK)]
         [ProducesResponseType(Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<GetContactsForDddResponse>>> ListContactsByDdd([FromRoute] GetContactsForDddRequest request)
+        public async Task<ActionResult<IEnumerable<GetContactsByDddResponse>>> ListContactsByDdd([FromRoute] GetContactsByDddRequest request)
         {
             var response = await _dispatcher.Send(request);
             return Ok(response);
