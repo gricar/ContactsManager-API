@@ -1,11 +1,6 @@
 ﻿using AutoMapper;
 using Contacts37.Application.Contracts.Persistence;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Contacts37.Application.Usecases.Contacts.Queries.GetAll
 {
@@ -17,8 +12,8 @@ namespace Contacts37.Application.Usecases.Contacts.Queries.GetAll
         public GetAllContactsRequestHandler(IContactRepository contactRepository,
             IMapper mapper)
         {
-            _contactRepository = contactRepository;
-            _mapper = mapper;
+            _contactRepository = contactRepository ?? throw new ArgumentNullException(nameof(contactRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
         public async Task<IEnumerable<GetAllContactsResponse>> Handle(GetAllContactsRequest request, CancellationToken cancellationToken)
         {
