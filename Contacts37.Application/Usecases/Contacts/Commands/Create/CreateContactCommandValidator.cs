@@ -11,7 +11,7 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Create
 
             RuleFor(c => c.DDDCode)
                 .NotEmpty().WithMessage("DDD code is required")
-                .Must(code => code >= 10 && code <= 99)
+                .InclusiveBetween(10, 99)
                 .WithMessage("DDDCode must be a valid 2 numeric digits.");
 
             RuleFor(c => c.Phone)
