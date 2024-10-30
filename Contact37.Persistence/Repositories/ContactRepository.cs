@@ -13,6 +13,13 @@ namespace Contacts37.Persistence.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public async Task<IEnumerable<Contact>> GetContactsDddCode(int dddCode)
+        {
+            return await _dbContext.Contacts
+                                 .Where(contact => contact.Region.DddCode == dddCode)
+                                 .ToListAsync();
+        }
+
         public async Task<bool> IsDddAndPhoneUniqueAsync(int ddd, string phone)
         {
             return !await _dbContext.Contacts.AnyAsync(c =>

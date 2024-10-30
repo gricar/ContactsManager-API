@@ -7,7 +7,9 @@ namespace Contacts37.Application.Usecases.Contacts.Queries.GetAll
     {
         public GetAllContactsMapper()
         {
-            CreateMap<Contact, GetAllContactsResponse>();
+            CreateMap<Contact, GetAllContactsResponse>()
+                .ForMember(dest => dest.DDDCode,
+                    opt => opt.MapFrom(src => src.Region.DddCode));
         }
     }
 }
