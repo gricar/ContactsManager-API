@@ -16,7 +16,7 @@ namespace Contacts37.Persistence.Repositories
         public async Task<IEnumerable<Contact>> GetContactsDddCode(int dddCode)
         {
             return await _dbContext.Contacts
-                                 .Where(contact => contact.DddCode == dddCode)
+                                 .Where(contact => contact.Region.DddCode == dddCode)
                                  .ToListAsync();
         }
 
