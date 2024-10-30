@@ -8,7 +8,6 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Delete
         public DeleteContactMapper()
         {
             CreateMap<DeleteContactCommand, Contact>();
-            CreateMap<Contact, DeleteContactCommandResponse>();
         }
     }
 }

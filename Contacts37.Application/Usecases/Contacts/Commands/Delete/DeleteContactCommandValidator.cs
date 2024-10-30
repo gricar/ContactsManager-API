@@ -7,15 +7,18 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Delete
     public class DeleteContactCommandValidator : AbstractValidator<DeleteContactCommand>
     {
         private readonly IContactRepository _contactRepository;
-        private readonly IRegionValidator _regionValidator;
-
-        public DeleteContactCommandValidator(IContactRepository contactRepository,
-            IRegionValidator regionValidator)
+        public DeleteContactCommandValidator(IContactRepository contactRepository)
         {
             _contactRepository = contactRepository;
-            _regionValidator = regionValidator;
+            RuleFor(c => c.Id)
+                .NotEmpty().WithMessage("Id is required")
+                .MustAsync(BeValidId).WithMessage("Id not found.")
+                ;
+        }
 
-            // ToDo: Validar IfExists aqui?
-		}
+        private async Task<bool> BeValidId(Guid id, CancellationToken cancellationToken)
+        {
+            return await _contactRepository.ExistsAsync(id);
+        }
     }
 }

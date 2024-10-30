@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Contacts37.Application.Usecases.Contacts.Commands.Delete
 {
-    public class DeleteContactCommandHandler : IRequestHandler<DeleteContactCommand, DeleteContactCommandResponse>
+    public class DeleteContactCommandHandler : IRequestHandler<DeleteContactCommand, Unit>
     {
         private readonly IContactRepository _contactRepository;
         private readonly IMapper _mapper;
@@ -18,13 +18,13 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Delete
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<DeleteContactCommandResponse> Handle(DeleteContactCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteContactCommand command, CancellationToken cancellationToken)
         {
             var contact = _mapper.Map<Contact>(command);
 
             await _contactRepository.DeleteAsync(contact);
 
-            return _mapper.Map<DeleteContactCommandResponse>(contact);
+            return new Unit();
         }
     }
 }

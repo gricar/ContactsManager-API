@@ -27,12 +27,12 @@ namespace Contacts37.API.Controllers
         }
 
         [HttpDelete]
-        [ProducesResponseType(typeof(Guid), Status200OK)]
+        [ProducesResponseType(typeof(Guid), Status204NoContent)]
         [ProducesResponseType(Status400BadRequest)]
         public async Task<ActionResult<Guid>> DeleteContact([FromBody] DeleteContactCommand command)
         {
             var response = await _dispatcher.Send(command);
-            return AcceptedAtAction(nameof(DeleteContact), new { id = response.Id }, response.Id);
+            return NoContent();
         }
     }
 }
