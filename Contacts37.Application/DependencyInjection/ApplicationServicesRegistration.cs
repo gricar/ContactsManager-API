@@ -1,5 +1,4 @@
 ﻿using Contacts37.Application.Common.Behaviors;
-using Contacts37.Domain.Specifications;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,8 +18,6 @@ namespace Contacts37.Application.DependencyInjection
             services.AddValidatorsFromAssembly(assembly);
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
-            services.AddScoped<IRegionValidator, RegionValidator>();
 
             return services;
         }

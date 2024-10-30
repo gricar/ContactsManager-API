@@ -23,7 +23,7 @@ namespace Contacts37.Persistence.Repositories
         public async Task<bool> IsDddAndPhoneUniqueAsync(int ddd, string phone)
         {
             return !await _dbContext.Contacts.AnyAsync(c =>
-                            c.DddCode == ddd
+                            c.Region.DddCode == ddd
                             && c.Phone == phone);
         }
 
