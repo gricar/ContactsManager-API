@@ -1,6 +1,8 @@
 ﻿using Contacts37.Application.Common.Exceptions;
+using Contacts37.Domain.Exceptions;
 using Newtonsoft.Json;
 using System.Net;
+using ApplicationException = Contacts37.Application.Common.Exceptions.ApplicationException;
 
 namespace Contacts37.API.Middlewares
 {
@@ -30,6 +32,8 @@ namespace Contacts37.API.Middlewares
             var statusCode = ex switch
             {
                 BadRequestException => HttpStatusCode.BadRequest,
+                ApplicationException => HttpStatusCode.BadRequest,
+                DomainException => HttpStatusCode.BadRequest,
                 //NotFoundException => HttpStatusCode.NotFound,
                 //UnauthorizedAccessException => HttpStatusCode.Unauthorized,
                 _ => HttpStatusCode.InternalServerError,
