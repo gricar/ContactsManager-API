@@ -1,5 +1,4 @@
 ﻿using Contacts37.Application.Contracts.Persistence;
-using Contacts37.Domain.Specifications;
 using FluentValidation;
 
 namespace Contacts37.Application.Usecases.Contacts.Commands.Delete
