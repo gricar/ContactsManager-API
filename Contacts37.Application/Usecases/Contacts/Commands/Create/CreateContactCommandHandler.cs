@@ -18,18 +18,39 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Create
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
+
         public async Task<CreateContactCommandResponse> Handle(CreateContactCommand command, CancellationToken cancellationToken)
         {
-            var isUnique = await _contactRepository.IsDddAndPhoneUniqueAsync(command.DDDCode, command.Phone);
-
-            if (!isUnique)
-                throw new BadRequestException("A contact with the same DDD code and phone number already exists.");
+            await EnsureContactIsUniqueAsync(command);
             
             var contact = _mapper.Map<Contact>(command);
 
             await _contactRepository.AddAsync(contact);
 
             return _mapper.Map<CreateContactCommandResponse>(contact);
+        }
+
+        private async Task EnsureContactIsUniqueAsync(CreateContactCommand command)
+        {
+            await CheckForUniqueEmailAsync(command.Email);
+
+            await CheckForUniqueContactAsync(command.DDDCode, command.Phone);
+        }
+
+        private async Task CheckForUniqueEmailAsync(string? email)
+        {
+            if (!string.IsNullOrEmpty(email) && !await _contactRepository.IsEmailUniqueAsync(email))
+            {
+                throw new DuplicateEmailException(email!);
+            }
+        }
+
+        private async Task CheckForUniqueContactAsync(int dddCode, string phone)
+        {
+            if (!await _contactRepository.IsDddAndPhoneUniqueAsync(dddCode, phone))
+            {
+                throw new DuplicateContactException(dddCode, phone);
+            }
         }
     }
 }
