@@ -19,34 +19,48 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
 
         public async Task<Unit> Handle(UpdateContactCommand command, CancellationToken cancellationToken)
         {
-            var existingUser = await _contactRepository.GetAsync(command.Id)
+            var existingContact = await _contactRepository.GetAsync(command.Id)
                 ?? throw new ContactNotFoundException(command.Id);
 
-            await ValidateContactAsync(command, existingUser);
+            await ValidateContactAsync(command, existingContact);
 
-            _mapper.Map(command, existingUser);
+            //_mapper.Map(command, existingUser);
 
-            await _contactRepository.UpdateAsync(existingUser);
+            existingContact.UpdateName(command.Name);
+            existingContact.UpdateEmail(command.Email);
+            existingContact.UpdatePhone(command.Phone);
+            existingContact.UpdateRegion(command.DDDCode);
+
+
+            /*Contact contact = new(
+                command.Name,
+                Region.Create(command.DDDCode),
+                command.Email,
+                command.Phone
+                );*/
+
+
+            await _contactRepository.UpdateAsync(existingContact);
 
             return Unit.Value;
         }
 
-        private async Task ValidateContactAsync(UpdateContactCommand command, Contact existingUser)
+        private async Task ValidateContactAsync(UpdateContactCommand command, Contact existingContact)
         {
-            if (HasPhoneChanged(command, existingUser))
+            if (HasPhoneChanged(command, existingContact))
             {
                 await ValidatePhoneIsUniqueAsync(command.DDDCode, command.Phone);
             }
 
-            if (HasEmailChanged(command.Email!, existingUser.Email!))
+            if (HasEmailChanged(command.Email!, existingContact.Email!))
             {
                 await ValidateEmailIsUniqueAsync(command.Email!);
             }
         }
 
-        private bool HasPhoneChanged(UpdateContactCommand command, Contact existingUser) =>
-            command.DDDCode != existingUser.Region.DddCode ||
-            command.Phone != existingUser.Phone;
+        private bool HasPhoneChanged(UpdateContactCommand command, Contact existingContact) =>
+            command.DDDCode != existingContact.Region.DddCode ||
+            command.Phone != existingContact.Phone;
 
         private bool HasEmailChanged(string newEmail, string existingEmail) =>
             !string.Equals(newEmail, existingEmail, StringComparison.OrdinalIgnoreCase);

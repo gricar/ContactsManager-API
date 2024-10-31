@@ -23,6 +23,28 @@ namespace Contacts37.Domain.Entities
             Email = email;
         }
 
+        public void UpdateName(string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName))
+                throw new ArgumentException("Name is required.");
+            Name = newName;
+        }
+
+        public void UpdateRegion(int newDddCode)
+        {
+            Region = new Region(newDddCode); // Cria uma nova instância com o novo DDD
+        }
+
+        public void UpdatePhone(string newPhone)
+        {
+            if (string.IsNullOrWhiteSpace(newPhone) || !IsValidPhoneNumber(newPhone))
+                throw new ArgumentException("Phone must be a 9-digit number.");
+
+            Phone = newPhone;
+        }
+
+        public void UpdateEmail(string? newEmail) => Email = newEmail;
+
         private static bool IsValidPhoneNumber(string phone) =>
             phone.Length == 9 && phone.All(char.IsDigit);
 

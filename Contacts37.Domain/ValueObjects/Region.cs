@@ -25,6 +25,11 @@ namespace Contacts37.Domain.ValueObjects
             Name = regionName;
         }
 
+        public static Region Create(int dddCode)
+        {
+            return new Region(dddCode);
+        }
+
         private static bool IsValidDddCode(int dddCode, out string regionName)
         {
             regionName = ValidRegions.FirstOrDefault(region => region.Value.Contains(dddCode)).Key;

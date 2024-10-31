@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contacts37.Domain.Entities;
+using Contacts37.Domain.ValueObjects;
 
 namespace Contacts37.Application.Usecases.Contacts.Commands.Update
 {
@@ -8,8 +9,8 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
         public UpdateContactMapper()
         {
             CreateMap<UpdateContactCommand, Contact>()
-                .ForPath(dest => dest.Region.DddCode,
-                    opt => opt.MapFrom(src => src.DDDCode));
+                .ForMember(dest => dest.Region,
+                    opt => opt.MapFrom(src => Region.Create(src.DDDCode)));
         }
     }
 }

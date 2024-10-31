@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Contacts37.Application.Usecases.Contacts.Commands.Create;
 using Contacts37.Application.Usecases.Contacts.Queries.GetAll;
 using Contacts37.Application.Usecases.Contacts.Queries.GetByDdd;
+using Contacts37.Application.Usecases.Contacts.Commands.Update;
 
 namespace Contacts37.API.Controllers
 {
