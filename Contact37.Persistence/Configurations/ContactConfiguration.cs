@@ -15,8 +15,11 @@ namespace Contacts37.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.Property(c => c.DddCode)
-                .IsRequired();
+            builder.OwnsOne(c => c.Region, regionBuilder =>
+            {
+                regionBuilder.Property(c => c.DddCode)
+                    .IsRequired();
+            });
 
             builder.Property(c => c.Phone)
                 .IsRequired()

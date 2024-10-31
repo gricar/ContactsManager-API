@@ -1,10 +1,7 @@
 ﻿namespace Contacts37.Application.Common.Exceptions
 {
-    public class BadRequestException : Exception
+    public class BadRequestException : ApplicationException
     {
-        public BadRequestException(string message) : base(message) { }
-
-
         public BadRequestException(string[] errorDetails)
         : base("Validation errors occurred. See error details.")
         {
