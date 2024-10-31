@@ -1,19 +1,11 @@
-﻿using Contacts37.Application.Contracts.Persistence;
-using Contacts37.Domain.Specifications;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Contacts37.Application.Usecases.Contacts.Commands.Update
 {
     public class UpdateContactCommandValidator : AbstractValidator<UpdateContactCommand>
     {
-        private readonly IContactRepository _contactRepository;
-        private readonly IRegionValidator _regionValidator;
-
-        public UpdateContactCommandValidator(IContactRepository contactRepository,
-            IRegionValidator regionValidator)
+        public UpdateContactCommandValidator()
         {
-            _contactRepository = contactRepository;
-            _regionValidator = regionValidator;
 
             RuleFor(c => c.Id)
                 .NotEmpty();
@@ -23,10 +15,8 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
 
             RuleFor(c => c.DDDCode)
                 .NotEmpty().WithMessage("DDD code is required")
-                .Must(code => code >= 10 && code <= 99)
-                .WithMessage("DDDCode must be a valid 2 numeric digits.")
-                .Must(BeValidRegion)
-                .WithMessage("DDDCode does not exist in any registered region.");
+                .InclusiveBetween(10, 99)
+                .WithMessage("DDDCode must be a valid 2 numeric digits.");
 
             RuleFor(c => c.Phone)
                 .NotEmpty().WithMessage("Phone number is required.")
@@ -35,8 +25,6 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
             RuleFor(c => c.Email)
                 .EmailAddress().When(x => !string.IsNullOrEmpty(x.Email)).WithMessage("Email must be a valid format.");
         }
-
-        private bool BeValidRegion(int dddCode) => _regionValidator.IsValid(dddCode);
 
     }
 }

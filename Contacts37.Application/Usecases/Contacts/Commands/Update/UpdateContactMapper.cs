@@ -7,7 +7,9 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
     {
         public UpdateContactMapper()
         {
-            CreateMap<UpdateContactCommand, Contact>();
+            CreateMap<UpdateContactCommand, Contact>()
+                .ForPath(dest => dest.Region.DddCode,
+                    opt => opt.MapFrom(src => src.DDDCode));
         }
     }
 }

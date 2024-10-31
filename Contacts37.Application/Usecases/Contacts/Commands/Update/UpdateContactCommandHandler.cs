@@ -20,7 +20,7 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
         public async Task<Unit> Handle(UpdateContactCommand command, CancellationToken cancellationToken)
         {
             var existingUser = await _contactRepository.GetAsync(command.Id)
-                ?? throw new ArgumentException("Contact not found");
+                ?? throw new ContactNotFoundException(command.Id);
 
             await ValidateContactAsync(command, existingUser);
 
@@ -28,7 +28,7 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
 
             await _contactRepository.UpdateAsync(existingUser);
 
-            return new Unit();
+            return Unit.Value;
         }
 
         private async Task ValidateContactAsync(UpdateContactCommand command, Contact existingUser)
@@ -45,7 +45,7 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
         }
 
         private bool HasPhoneChanged(UpdateContactCommand command, Contact existingUser) =>
-            command.DDDCode != existingUser.DddCode ||
+            command.DDDCode != existingUser.Region.DddCode ||
             command.Phone != existingUser.Phone;
 
         private bool HasEmailChanged(string newEmail, string existingEmail) =>
@@ -55,7 +55,7 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
         {
             if (!await _contactRepository.IsDddAndPhoneUniqueAsync(dddCode, phone))
             {
-                throw new BadRequestException("A contact with the same DDD code and phone number already exists.");
+                throw new DuplicateContactException(dddCode, phone);
             }
         }
 
@@ -63,7 +63,7 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
         {
             if (!await _contactRepository.IsEmailUniqueAsync(email))
             {
-                throw new BadRequestException("Email already registered.");
+                throw new DuplicateEmailException(email);
             }
         }
     }
