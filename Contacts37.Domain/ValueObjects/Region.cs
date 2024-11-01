@@ -16,18 +16,18 @@ namespace Contacts37.Domain.ValueObjects
             { "Sul", new List<int> { 41, 42, 43, 44, 45, 46, 47, 48, 49, 51, 53, 54, 55 } }
         };
 
-        public Region(int dddCode)
+        private Region(int dddCode, string name)
         {
-            if (!IsValidDddCode(dddCode, out var regionName))
-                throw new InvalidDDDException(dddCode);
-
             DddCode = dddCode;
-            Name = regionName;
+            Name = name;
         }
 
         public static Region Create(int dddCode)
         {
-            return new Region(dddCode);
+            if (!IsValidDddCode(dddCode, out var regionName))
+                throw new InvalidDDDException(dddCode);
+
+            return new Region(dddCode, regionName);
         }
 
         private static bool IsValidDddCode(int dddCode, out string regionName)
