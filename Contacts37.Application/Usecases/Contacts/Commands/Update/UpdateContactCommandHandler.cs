@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Contacts37.Application.Common.Exceptions;
+﻿using Contacts37.Application.Common.Exceptions;
 using Contacts37.Application.Contracts.Persistence;
 using Contacts37.Domain.Entities;
 using MediatR;
@@ -9,12 +8,10 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
     public class UpdateContactCommandHandler : IRequestHandler<UpdateContactCommand, Unit>
     {
         private readonly IContactRepository _contactRepository;
-        private readonly IMapper _mapper;
 
-        public UpdateContactCommandHandler(IContactRepository contactRepository, IMapper mapper)
+        public UpdateContactCommandHandler(IContactRepository contactRepository)
         {
             _contactRepository = contactRepository ?? throw new ArgumentNullException(nameof(contactRepository));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<Unit> Handle(UpdateContactCommand command, CancellationToken cancellationToken)
@@ -22,39 +19,32 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
             var existingContact = await _contactRepository.GetAsync(command.Id)
                 ?? throw new ContactNotFoundException(command.Id);
 
-            await ValidateContactAsync(command, existingContact);
-
-            //_mapper.Map(command, existingUser);
-
-            existingContact.UpdateName(command.Name);
-            existingContact.UpdateEmail(command.Email);
-            existingContact.UpdatePhone(command.Phone);
-            existingContact.UpdateRegion(command.DDDCode);
-
-
-            /*Contact contact = new(
-                command.Name,
-                Region.Create(command.DDDCode),
-                command.Email,
-                command.Phone
-                );*/
-
+            await EnsureContactIsUpdatableAsync(command, existingContact);
 
             await _contactRepository.UpdateAsync(existingContact);
 
             return Unit.Value;
         }
 
-        private async Task ValidateContactAsync(UpdateContactCommand command, Contact existingContact)
+        private async Task EnsureContactIsUpdatableAsync(UpdateContactCommand command, Contact existingContact)
         {
             if (HasPhoneChanged(command, existingContact))
             {
                 await ValidatePhoneIsUniqueAsync(command.DDDCode, command.Phone);
+
+                existingContact.UpdateRegion(command.DDDCode);
+                existingContact.UpdatePhone(command.Phone);
             }
 
-            if (HasEmailChanged(command.Email!, existingContact.Email!))
+            if (!string.IsNullOrWhiteSpace(command.Email) && HasEmailChanged(command.Email!, existingContact.Email!))
             {
                 await ValidateEmailIsUniqueAsync(command.Email!);
+                existingContact.UpdateEmail(command.Email);
+            }
+
+            if (HasNameChanged(command.Name, existingContact.Name))
+            {
+                existingContact.UpdateName(command.Name);
             }
         }
 
@@ -64,6 +54,9 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Update
 
         private bool HasEmailChanged(string newEmail, string existingEmail) =>
             !string.Equals(newEmail, existingEmail, StringComparison.OrdinalIgnoreCase);
+
+        private bool HasNameChanged(string newName, string existingName) =>
+            !string.Equals(newName, existingName, StringComparison.OrdinalIgnoreCase);
 
         private async Task ValidatePhoneIsUniqueAsync(int dddCode, string phone)
         {

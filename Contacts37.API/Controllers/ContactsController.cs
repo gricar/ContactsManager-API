@@ -46,13 +46,13 @@ namespace Contacts37.API.Controllers
             return Ok(response);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         [ProducesResponseType(Status204NoContent)]
         [ProducesResponseType(Status400BadRequest)]
         [ProducesResponseType(Status404NotFound)]
         public async Task<ActionResult<Unit>> UpdateUser([FromRoute] Guid id, [FromBody] UpdateContactCommand command)
         {
-            var response = await _dispatcher.Send(command);
+            await _dispatcher.Send(command);
             return NoContent();
         }
     }
