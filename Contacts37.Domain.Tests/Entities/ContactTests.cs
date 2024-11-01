@@ -34,6 +34,10 @@ namespace Contacts37.Domain.Tests.Entities
         [InlineData("Jony", 11, null, "jony@example.com", "Phone '' must be a 9-digit number.")]
         [InlineData("Jony", 11, "12345", "jony@example.com", "Phone '12345' must be a 9-digit number.")]
         [InlineData("Jony", 11, "1a3b56789", "jony@example.com", "Phone '1a3b56789' must be a 9-digit number.")]
+        [InlineData("Jony", 11, "987654321", "", "Email '' must be a valid format.")]
+        [InlineData("Jony", 11, "987654321", "jony@invalid", "Email 'jony@invalid' must be a valid format.")]
+        [InlineData("Jony", 11, "987654321", "jony.com", "Email 'jony.com' must be a valid format.")]
+
         public void CreateContact_InvalidParameters_ShouldThrowException(
             string name, int dddCode, string phone, string email, string expectedErrorMessage)
         {
@@ -116,14 +120,15 @@ namespace Contacts37.Domain.Tests.Entities
         public void UpdateContact_ValidEmail_ShouldUpdateEmail()
         {
             // Arrange
-            var contact = Contact.Create("Jony", 11, "123456789", "jony@example.com");
-            string newEmail = "jony@gmail.com";
+            var contact = Contact.Create("Jony", 11, "123456789", null);
+            string newEmail = "jony@example.com";
 
             // Act
             contact.UpdateEmail(newEmail);
 
             // Assert
             contact.Email.Should().Be(newEmail);
+            contact.Email.Should().NotBeNull();
         }
     }
 }
