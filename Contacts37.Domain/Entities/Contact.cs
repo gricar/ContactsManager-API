@@ -1,6 +1,7 @@
 ﻿using Contacts37.Domain.Common;
 using Contacts37.Domain.Exceptions;
 using Contacts37.Domain.ValueObjects;
+using System.Text.RegularExpressions;
 
 namespace Contacts37.Domain.Entities
 {
@@ -18,6 +19,7 @@ namespace Contacts37.Domain.Entities
         {
             ValidateName(name);
             ValidatePhone(phone);
+            ValidateEmail(email);
 
             return new Contact
             {
@@ -47,10 +49,8 @@ namespace Contacts37.Domain.Entities
 
         public void UpdateEmail(string newEmail)
         {
-            if (newEmail != null)
-            {
-                Email = newEmail;
-            }
+            ValidateEmail(newEmail);
+            Email = newEmail;
         }
 
         private static void ValidateName(string name)
@@ -63,6 +63,17 @@ namespace Contacts37.Domain.Entities
         {
             if (string.IsNullOrWhiteSpace(phone) || phone.Length != 9 || !phone.All(char.IsDigit))
                 throw new InvalidPhoneNumberException(phone);
+        }
+
+        private static void ValidateEmail(string? email)
+        {
+            if (email is not null && !IsValidEmailFormat(email))
+                throw new InvalidEmailException(email);
+        }
+
+        private static bool IsValidEmailFormat(string email)
+        {
+            return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
     }
 }
