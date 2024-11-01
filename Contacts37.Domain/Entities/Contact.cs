@@ -18,7 +18,6 @@ namespace Contacts37.Domain.Entities
         {
             ValidateName(name);
             ValidatePhone(phone);
-            
 
             return new Contact
             {
@@ -46,7 +45,13 @@ namespace Contacts37.Domain.Entities
             Phone = newPhone;
         }
 
-        public void UpdateEmail(string? newEmail) => Email = newEmail;
+        public void UpdateEmail(string newEmail)
+        {
+            if (newEmail != null)
+            {
+                Email = newEmail;
+            }
+        }
 
         private static void ValidateName(string name)
         {
