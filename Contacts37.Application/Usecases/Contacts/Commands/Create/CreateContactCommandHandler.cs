@@ -23,7 +23,7 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Create
         {
             await EnsureContactIsUniqueAsync(command);
             
-            var contact = _mapper.Map<Contact>(command);
+            var contact = Contact.Create(command.Name, command.DDDCode, command.Phone, command.Email);
 
             await _contactRepository.AddAsync(contact);
 

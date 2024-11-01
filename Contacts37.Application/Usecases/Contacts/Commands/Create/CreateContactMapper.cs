@@ -7,7 +7,6 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Create
     {
         public CreateContactMapper()
         {
-            CreateMap<CreateContactCommand, Contact>();
             CreateMap<Contact, CreateContactCommandResponse>();
         }
     }
