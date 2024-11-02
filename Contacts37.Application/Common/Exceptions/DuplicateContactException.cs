@@ -1,4 +1,6 @@
-﻿namespace Contacts37.Application.Common.Exceptions
+﻿using Contacts37.Domain.Entities;
+
+namespace Contacts37.Application.Common.Exceptions
 {
     public class DuplicateContactException : ApplicationException
     {

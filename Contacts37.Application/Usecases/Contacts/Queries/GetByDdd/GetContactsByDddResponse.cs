@@ -1,6 +1,6 @@
-﻿namespace Contacts37.Application.Usecases.Contacts.Queries.GetAll
+﻿namespace Contacts37.Application.Usecases.Contacts.Queries.GetByDdd
 {
-    public sealed record GetAllContactsResponse()
+    public sealed record GetContactsByDddResponse()
     {
         public string Name { get; set; } = string.Empty;
         public int DDDCode { get; set; }

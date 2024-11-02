@@ -19,6 +19,10 @@ namespace Contacts37.Persistence.Configurations
             {
                 regionBuilder.Property(c => c.DddCode)
                     .IsRequired();
+
+                regionBuilder.Property(c => c.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
             });
 
             builder.Property(c => c.Phone)
