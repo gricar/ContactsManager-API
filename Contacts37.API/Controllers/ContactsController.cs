@@ -27,12 +27,12 @@ namespace Contacts37.API.Controllers
             return CreatedAtAction(nameof(PostContact), new { id = response.Id }, response.Id);
         }
 
-        [HttpDelete]
-        [ProducesResponseType(typeof(Guid), Status204NoContent)]
+		[HttpDelete("{id:guid}")]
+		[ProducesResponseType(Status204NoContent)]
         [ProducesResponseType(Status400BadRequest)]
-        public async Task<ActionResult<Guid>> DeleteContact([FromBody] DeleteContactCommand command)
+        public async Task<ActionResult<Guid>> DeleteContact([FromRoute] Guid id)
         {
-            var response = await _dispatcher.Send(command);
+            var response = await _dispatcher.Send(new DeleteContactCommand(id));
             return NoContent();
         }
 
