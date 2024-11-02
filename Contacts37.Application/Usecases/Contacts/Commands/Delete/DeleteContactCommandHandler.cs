@@ -1,5 +1,5 @@
-﻿using Contacts37.Application.Contracts.Persistence;
-using Contacts37.Domain.Exceptions;
+﻿using Contacts37.Application.Common.Exceptions;
+using Contacts37.Application.Contracts.Persistence;
 using MediatR;
 
 namespace Contacts37.Application.Usecases.Contacts.Commands.Delete
@@ -18,7 +18,7 @@ namespace Contacts37.Application.Usecases.Contacts.Commands.Delete
             var contact = await _contactRepository.GetAsync(command.Id);
 
             if (contact == null)
-				throw new InvalidIdException(command.Id);
+				throw new ContactNotFoundException(command.Id);
 
 			await _contactRepository.DeleteAsync(contact);
 

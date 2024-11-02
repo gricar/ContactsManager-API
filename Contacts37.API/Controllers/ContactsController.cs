@@ -34,7 +34,7 @@ namespace Contacts37.API.Controllers
         [ProducesResponseType(Status400BadRequest)]
         public async Task<ActionResult<Guid>> DeleteContact([FromRoute] Guid id)
         {
-            var response = await _dispatcher.Send(new DeleteContactCommand(id));
+            await _dispatcher.Send(new DeleteContactCommand(id));
             return NoContent();
         }
 
