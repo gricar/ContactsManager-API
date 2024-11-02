@@ -3,9 +3,11 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 using Contacts37.Application.Usecases.Contacts.Commands.Create;
 using Contacts37.Application.Usecases.Contacts.Queries.GetAll;
-using Contacts37.Application.Usecases.Contacts.Queries.GetByDdd;
+using Contacts37.Application.Usecases.Contacts.Commands.Delete;
 using Contacts37.Application.Usecases.Contacts.Commands.Update;
 using Contacts37.Application.Usecases.Contacts.Commands.Delete;
+using Contacts37.Application.Usecases.Contacts.Queries.GetByDdd;
+>>>>>>>>> Temporary merge branch 2
 
 namespace Contacts37.API.Controllers
 {
