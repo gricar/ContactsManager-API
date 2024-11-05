@@ -43,9 +43,6 @@ namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Create
             _contactRepositoryMock.Setup(repo => repo.IsDddAndPhoneUniqueAsync(command.DDDCode , command.Phone))
                 .ReturnsAsync(true);
 
-            //_contactRepositoryMock.Setup(repo => repo.AddAsync(contact))
-            //    .ReturnsAsync(true);
-
             var handler = new CreateContactCommandHandler(_contactRepositoryMock.Object, _mapper);
 
             // Act
@@ -57,127 +54,88 @@ namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Create
             _contactRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<Contact>()), Times.Once);
         }
 
-        //[Fact(DisplayName = "Validate contact when invalid name")]
-        //[Trait("Category", "Create Contact - Failure - Invalid Name")]
-        //public async void CreateContact_ShouldThrowException_WhenContactInvalidName()
-        //{
-        //    // Arrange
-        //    string name = " ";
-        //    int dddCode = _faker.PickRandom(new[] { 11, 21, 31, 41 });
-        //    string phone = _faker.Phone.PhoneNumber("#########");
-        //    string email = _faker.Internet.Email();
+        [Fact(DisplayName = "Validate contact when invalid name")]
+        [Trait("Category", "Create Contact - Failure - Invalid Name")]
+        public async void CreateContact_ShouldThrowException_WhenContactInvalidName()
+        {
+            // Arrange
+            string name = " ";
+            int dddCode = _faker.PickRandom(new[] { 11, 21, 31, 41 });
+            string phone = _faker.Phone.PhoneNumber("#########");
+            string email = _faker.Internet.Email();
 
-        //    var contact = Contact.Create(name, dddCode, phone, email);
+            var contact = Contact.Create(name, dddCode, phone, email);
 
-        //    var handler = new CreateContactCommandHandler(_contactRepositoryMock.Object, _mapper);
+            var handler = new CreateContactCommandHandler(_contactRepositoryMock.Object, _mapper);
 
-        //    var command = new CreateContactCommand(name, dddCode, phone, email);
+            var command = new CreateContactCommand(name, dddCode, phone, email);
 
-        //    // Act
-        //    Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
+            // Act
+            Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
 
-        //    // Assert
-        //    await act.Should().ThrowAsync<InvalidNameException>()
-        //        .WithMessage($"Name is required.");
-        //    _contactRepositoryMock.Verify(repo => repo.GetAsync(contact.Id), Times.Never);
-        //    _contactRepositoryMock.Verify(repo => repo.UpdateAsync(contact), Times.Never);
-        //}
+            // Assert
+            await act.Should().ThrowAsync<InvalidNameException>()
+                .WithMessage($"Name is required.");
+            _contactRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<Contact>()), Times.Once);
+        }
 
-        //[Fact(DisplayName = "Validate contact when invalid fone")]
-        //[Trait("Category", "Create Contact - Failure - Invalid Fone")]
-        //public async void CreateContact_ShouldThrowException_WhenContactInvalidFone()
-        //{
-        //    // Arrange
-        //    string name = _faker.Person.FirstName;
-        //    int dddCode = _faker.PickRandom(new[] { 11, 21, 31, 41 });
-        //    string phone = _faker.Phone.PhoneNumber("###");
-        //    string email = _faker.Internet.Email();
+        [Fact(DisplayName = "Validate contact when invalid fone")]
+        [Trait("Category", "Create Contact - Failure - Invalid Fone")]
+        public async void CreateContact_ShouldThrowException_WhenContactInvalidFone()
+        {
+            // Arrange
+            string name = _faker.Person.FirstName;
+            int dddCode = _faker.PickRandom(new[] { 11, 21, 31, 41 });
+            string phone = _faker.Phone.PhoneNumber("###");
+            string email = _faker.Internet.Email();
 
-        //    var contact = Contact.Create(name, dddCode, phone, email);
+            var contact = Contact.Create(name, dddCode, phone, email);
 
-        //    var handler = new CreateContactCommandHandler(_contactRepositoryMock.Object, _mapper);
+            var handler = new CreateContactCommandHandler(_contactRepositoryMock.Object, _mapper);
 
-        //    var command = new CreateContactCommand(name, dddCode, phone, email);
+            var command = new CreateContactCommand(name, dddCode, phone, email);
 
-        //    // Act
-        //    Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
+            // Act
+            Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
 
-        //    // Assert
-        //    await act.Should().ThrowAsync<InvalidPhoneNumberException>()
-        //        .WithMessage($"Phone '{phone}' must be a 9-digit number.");
-        //    _contactRepositoryMock.Verify(repo => repo.GetAsync(contact.Id), Times.Once);
-        //    _contactRepositoryMock.Verify(repo => repo.UpdateAsync(contact), Times.Never);
-        //}
+            // Assert
+            await act.Should().ThrowAsync<InvalidPhoneNumberException>()
+                .WithMessage($"Phone '{phone}' must be a 9-digit number.");
+            _contactRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<Contact>()), Times.Once);
+        }
 
+        [Fact(DisplayName = "Validate contact when invalid email")]
+        [Trait("Category", "Create Contact - Failure - Invalid Email")]
+        public async void CreateContact_ShouldThrowException_WhenContactInvalidEmail()
+        {
+            // Arrange
+            string name = _faker.Person.FirstName;
+            int dddCode = _faker.PickRandom(new[] { 11, 21, 31, 41 });
+            string phone = _faker.Phone.PhoneNumber("#########");
+            string email = _faker.Internet.Email();
 
-        //[Fact(DisplayName = "Validate contact when email exist")]
-        //[Trait("Category", "Create Contact - Failure - Email Exist")]
-        //public async void CreateContact_ShouldThrowException_WhenContactExistEmail()
-        //{
-        //    // Arrange
-        //    string name = _faker.Person.FirstName;
-        //    int dddCode = _faker.PickRandom(new[] { 11, 21, 31, 41 });
-        //    string phone = _faker.Phone.PhoneNumber("#########");
-        //    string email = _faker.Internet.Email();
+            var contact = Contact.Create(name, dddCode, phone, email);
 
-        //    var contact = Contact.Create(name, dddCode, phone, email);
+            var handler = new CreateContactCommandHandler(_contactRepositoryMock.Object, _mapper);
 
-        //    int dddCode2 = _faker.PickRandom(new[] { 11, 21, 31, 41 });
-        //    string phone2 = _faker.Phone.PhoneNumber("#########");
+            var command = new CreateContactCommand(name, dddCode, phone, "email123");
 
-        //    var handler = new CreateContactCommandHandler(_contactRepositoryMock.Object, _mapper);
+            _contactRepositoryMock.Setup(repo => repo.GetAsync(contact.Id))
+                .ReturnsAsync(contact);
 
-        //    var command = new CreateContactCommand(name, dddCode2, phone2, email);
+            _contactRepositoryMock.Setup(repo => repo.IsEmailUniqueAsync(command.Email!))
+                .ReturnsAsync(true);
 
-        //    _contactRepositoryMock.Setup(repo => repo.GetAsync(contact.Id))
-        //        .ReturnsAsync(contact);
+            _contactRepositoryMock.Setup(repo => repo.DeleteAsync(contact))
+                .Returns(Task.CompletedTask);
 
-        //    _contactRepositoryMock.Setup(repo => repo.DeleteAsync(contact))
-        //        .Returns(Task.CompletedTask);
+            // Act
+            Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
 
-        //    // Act
-        //    Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
-
-        //    // Assert
-        //    await act.Should().ThrowAsync<DuplicateEmailException>()
-        //        .WithMessage($"A contact with the same Email '{email}' already exists.");
-        //    _contactRepositoryMock.Verify(repo => repo.GetAsync(contact.Id), Times.Once);
-        //    _contactRepositoryMock.Verify(repo => repo.UpdateAsync(contact), Times.Never);
-        //}
-
-        //[Fact(DisplayName = "Validate contact when invalid email")]
-        //[Trait("Category", "Create Contact - Failure - Invalid Email")]
-        //public async void CreateContact_ShouldThrowException_WhenContactInvalidEmail()
-        //{
-        //    // Arrange
-        //    string name = _faker.Person.FirstName;
-        //    int dddCode = _faker.PickRandom(new[] { 11, 21, 31, 41 });
-        //    string phone = _faker.Phone.PhoneNumber("#########");
-        //    string email = _faker.Internet.Email();
-
-        //    var contact = Contact.Create(name, dddCode, phone, email);
-
-        //    var handler = new CreateContactCommandHandler(_contactRepositoryMock.Object, _mapper);
-
-        //    var command = new CreateContactCommand(name, dddCode, phone, "email123");
-
-        //    _contactRepositoryMock.Setup(repo => repo.GetAsync(contact.Id))
-        //        .ReturnsAsync(contact);
-
-        //    _contactRepositoryMock.Setup(repo => repo.IsEmailUniqueAsync(command.Email!))
-        //        .ReturnsAsync(true);
-
-        //    _contactRepositoryMock.Setup(repo => repo.DeleteAsync(contact))
-        //        .Returns(Task.CompletedTask);
-
-        //    // Act
-        //    Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
-
-        //    // Assert
-        //    await act.Should().ThrowAsync<InvalidEmailException>()
-        //        .WithMessage($"Email '{command.Email!}' must be a valid format.");
-        //    _contactRepositoryMock.Verify(repo => repo.GetAsync(contact.Id), Times.Once);
-        //    _contactRepositoryMock.Verify(repo => repo.UpdateAsync(contact), Times.Never);
-        //}
+            // Assert
+            await act.Should().ThrowAsync<InvalidEmailException>()
+                .WithMessage($"Email '{command.Email!}' must be a valid format.");
+            _contactRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<Contact>()), Times.Once);
+        }
     }
 }
