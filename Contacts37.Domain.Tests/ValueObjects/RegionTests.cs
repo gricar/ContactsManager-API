@@ -21,7 +21,9 @@ namespace Contacts37.Domain.Tests.ValueObjects
             // Assert
             region.Should().NotBeNull();
             region.DddCode.Should().Be(dddCode);
+            region.DddCode.Should().BeGreaterThan(0);
             region.Name.Should().Be(name);
+            region.Name.Should().NotBeNullOrEmpty();
         }
 
         [Theory(DisplayName = "Validate region creation with invalid DDD codes")]

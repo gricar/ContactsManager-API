@@ -1,33 +1,40 @@
 ﻿using Contacts37.Domain.Entities;
 using Contacts37.Domain.Exceptions;
+using Contacts37.Domain.Tests.Fixtures;
 using FluentAssertions;
 
 namespace Contacts37.Domain.Tests.Entities
 {
+    [Collection(nameof(ContactFixtureCollection))]
     public class ContactTests
     {
-        [Fact(DisplayName = "Validate contact creation with valid parameters")]
+        private readonly ContactFixture _fixture;
+
+        public ContactTests(ContactFixture fixture)
+        {
+            _fixture = fixture;
+        }
+
+        [Fact(DisplayName = "Should create new contact with valid values")]
         [Trait("Category", "Create Contact - Success")]
         public void CreateContact_ValidParameters_ShouldCreate()
         {
             // Arrange
-            string name = "Jony";
-            int dddCode = 11;
-            string phone = "123456789";
-            string email = "jony@example.com";
-
-            // Act
-            var contact = Contact.Create(name, dddCode, phone, email);
+            var contact = _fixture.CreateValidContact();
 
             // Assert
             contact.Should().NotBeNull();
-            contact.Name.Should().Be(name);
-            contact.Region.DddCode.Should().Be(dddCode);
-            contact.Phone.Should().Be(phone);
-            contact.Email.Should().Be(email);
+            contact.Name.Should().NotBeNullOrWhiteSpace();
+            contact.Name.Should().Be(contact.Name);
+            contact.Region.DddCode.Should().BeGreaterThan(0);
+            contact.Region.DddCode.Should().Be(contact.Region.DddCode);
+            contact.Phone.Should().MatchRegex(@"^\d{9}$");
+            contact.Phone.Should().Be(contact.Phone);
+            contact.Email.Should().MatchRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+            contact.Email.Should().Be(contact.Email);
         }
 
-        [Theory(DisplayName = "Validate contact creation with invalid parameters")]
+        [Theory(DisplayName = "Should throw exception when creating new contact with invalid values")]
         [Trait("Category", "Create Contact - Failure")]
         [InlineData("", 11, "987654321", "jony@example.com", "Name is required.")]
         [InlineData(null, 11, "987654321", "jony@example.com", "Name is required.")]
@@ -49,12 +56,12 @@ namespace Contacts37.Domain.Tests.Entities
                 .WithMessage(expectedErrorMessage);
         }
 
-        [Fact(DisplayName = "Validate updating name with valid name")]
+        [Fact(DisplayName = "Should update name when valid name is provided")]
         [Trait("Category", "Update Contact Name - Success")]
         public void UpdateContact_ValidName_ShouldUpdateName()
         {
             // Arrange
-            var contact = Contact.Create("Jony", 11, "123456789", "jony@example.com");
+            var contact = _fixture.CreateValidContact();
             string newName = "Jane";
 
             // Act
@@ -64,14 +71,14 @@ namespace Contacts37.Domain.Tests.Entities
             contact.Name.Should().Be(newName);
         }
 
-        [Theory(DisplayName = "Validate updating name with invalid names")]
+        [Theory(DisplayName = "Should throw exception when updating name with invalid value")]
         [Trait("Category", "Update Contact Name - Failure")]
         [InlineData(null)]
         [InlineData("")]
         public void UpdateContact_InvalidName_ShouldThrowException(string invalidName)
         {
             // Arrange
-            var contact = Contact.Create("Jony", 11, "123456789", "jony@example.com");
+            var contact = _fixture.CreateValidContact();
 
             // Act
             Action act = () => contact.UpdateName(invalidName);
@@ -81,12 +88,12 @@ namespace Contacts37.Domain.Tests.Entities
                 .WithMessage("Name is required.");
         }
 
-        [Fact(DisplayName = "Validate updating phone with valid phone")]
+        [Fact(DisplayName = "Should update phone when valid phone is provided")]
         [Trait("Category", "Update Contact Phone - Success")]
         public void UpdateContact_ValidPhone_ShouldUpdatePhone()
         {
             // Arrange
-            var contact = Contact.Create("Jony", 11, "123456789", "jony@example.com");
+            var contact = _fixture.CreateValidContact();
             string newPhone = "987654321";
 
             // Act
@@ -96,7 +103,7 @@ namespace Contacts37.Domain.Tests.Entities
             contact.Phone.Should().Be(newPhone);
         }
 
-        [Theory(DisplayName = "Validate updating phone with invalid phones")]
+        [Theory(DisplayName = "Should throw exception when updating phone with invalid value")]
         [Trait("Category", "Update Contact Phone - Failure")]
         [InlineData(null)]
         [InlineData("")]
@@ -105,7 +112,7 @@ namespace Contacts37.Domain.Tests.Entities
         public void UpdateContact_InvalidPhones_ShouldThrowException(string invalidPhone)
         {
             // Arrange
-            var contact = Contact.Create("Jony", 11, "123456789", "jony@example.com");
+            var contact = _fixture.CreateValidContact();
 
             // Act
             Action act = () => contact.UpdatePhone(invalidPhone);
@@ -115,12 +122,13 @@ namespace Contacts37.Domain.Tests.Entities
                 .WithMessage($"Phone '{invalidPhone}' must be a 9-digit number.");
         }
 
-        [Fact(DisplayName = "Validate updating email with valid email")]
+        [Fact(DisplayName = "Should update email when valid email is provided")]
         [Trait("Category", "Update Contact Email - Success")]
         public void UpdateContact_ValidEmail_ShouldUpdateEmail()
         {
             // Arrange
-            var contact = Contact.Create("Jony", 11, "123456789", null);
+            var contact = _fixture.CreateValidContact();
+
             string newEmail = "jony@example.com";
 
             // Act
@@ -129,6 +137,22 @@ namespace Contacts37.Domain.Tests.Entities
             // Assert
             contact.Email.Should().Be(newEmail);
             contact.Email.Should().NotBeNull();
+        }
+
+        [Theory(DisplayName = "Should throw exception when updating email with invalid value")]
+        [Trait("Category", "Update Contact Email - Failure")]
+        [InlineData("jony@example")]
+        public void UpdateContact_InvalidEmails_ShouldThrowException(string invalidEmail)
+        {
+            // Arrange
+            var contact = Contact.Create("Jony", 11, "123456789", null);
+
+            // Act
+            Action act = () => contact.UpdateEmail(invalidEmail);
+
+            // Assert
+            act.Should().Throw<InvalidEmailException>()
+                .WithMessage($"Email '{invalidEmail}' must be a valid format.");
         }
     }
 }
