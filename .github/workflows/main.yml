@@ -40,7 +40,7 @@ jobs:
       run: dotnet restore
 
     - name: Apply migrations
-      run: dotnet ef database update --project Contacts37.Persistence
+      run: dotnet ef database update --startup-project ..\Contacts37.API
 
     - name: Build solution
       run: dotnet build --configuration Release --no-restore
