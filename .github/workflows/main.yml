@@ -44,7 +44,7 @@ jobs:
 
     - name: Apply migrations
       run: |
-        cd Contacts37.Persistence
+        cd Contact37.Persistence
         dotnet ef database update --startup-project ../Contacts37.API
       env:
         DOTNET_CLI_HOME: /tmp
