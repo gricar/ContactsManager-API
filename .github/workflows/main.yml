@@ -43,7 +43,12 @@ jobs:
       run: dotnet restore
 
     - name: Apply migrations
-      run: dotnet ef database update --project Contacts37.Persistence
+      run: |
+        cd Contacts37.Persistence
+        dotnet ef database update --startup-project ../Contacts37.API
+      env:
+        DOTNET_CLI_HOME: /tmp
+        DATABASE_CONNECTION_STRING: ${{ secrets.DATABASE_CONNECTION_STRING }}
 
     - name: Build solution
       run: dotnet build --configuration Release --no-restore
