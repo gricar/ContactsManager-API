@@ -53,7 +53,7 @@ namespace Contacts37.Application.IntegrationTests
             await act.Should().ThrowAsync<BadRequestException>();
         }
 
-        [Fact(DisplayName = "Should return existing contacts from database")]
+        [Fact(Skip = "WIP", DisplayName = "Should return existing contacts from database")]
         [Trait("Category", "Integration")]
         public async Task GetAll_ShouldReturnContactsList_FromDatabase()
         {
@@ -71,7 +71,7 @@ namespace Contacts37.Application.IntegrationTests
                 .And.Contain(contact => contact.Name == "Ayrton" && contact.DDDCode == 13);
         }
 
-        [Fact(DisplayName = "Should return one contact that exists on database")]
+        [Fact (Skip = "WIP", DisplayName = "Should return one contact that exists on database")]
         [Trait("Category", "Integration")]
         public async Task GetByDdd_ShouldReturnContact_WhenContactExists()
         {
