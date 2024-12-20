@@ -37,10 +37,7 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Install dotnet-ef
-      run: dotnet tool install --global dotnet-ef
-
-    - name: Add dotnet tools to PATH
-      run: echo "::add-path::~/.dotnet/tools"
+      run: dotnet tool install --global dotnet-ef --version 8.0.10
 
     - name: Restore dependencies
       run: dotnet restore
