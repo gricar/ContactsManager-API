@@ -13,6 +13,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          SA_PASSWORD: ${{ secrets.MSSQL_SA_PASSWORD }}
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "exit 0"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -25,8 +39,20 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
+    - name: Apply migrations
+      run: dotnet ef database update --project Contacts37.Persistence
+
     - name: Build solution
       run: dotnet build --configuration Release --no-restore
 
     - name: Run tests
-      run: dotnet test --configuration Release --no-build --verbosity normal
+      env:
+        TestContainerDb__ConnectionString: ${{ secrets.TESTCONTAINER_CONNECTION_STRING }}
+      run: dotnet test --no-build --logger "trx;LogFileName=test_results.trx"
+
+    - name: Publish Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: Test Results
+        path: test_results.trx
