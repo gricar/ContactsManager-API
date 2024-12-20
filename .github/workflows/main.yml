@@ -36,9 +36,6 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Install dotnet-ef
-      run: dotnet tool install --global dotnet-ef --version 8.0.10
-
     - name: Restore dependencies
       run: dotnet restore
 
@@ -46,13 +43,4 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Run tests
-      env:
-        TestContainerDb__ConnectionString: ${{ secrets.TESTCONTAINER_CONNECTION_STRING }}
-      run: dotnet test --no-build --logger "trx;LogFileName=test_results.trx"
-
-    - name: Publish Test Results
-      if: always()
-      uses: actions/upload-artifact@v3
-      with:
-        name: Test Results
-        path: test_results.trx
+      run: dotnet test --configuration Release --no-build --verbosity normal
