@@ -37,10 +37,10 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore .\Contact37.sln
 
     - name: Build solution
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build .\Contact37.sln --configuration Release --no-restore
 
     - name: Run tests
-      run: dotnet test --configuration Release --no-build --verbosity normal
+      run: dotnet test .\Contact37.sln --configuration Release --no-build --verbosity normal
