@@ -36,18 +36,11 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: List current directory
-      run: |
-        echo "Current directory:"
-        pwd
-        echo "Files and folders in the current directory:"
-        ls -la
-
     - name: Restore dependencies
       run: dotnet restore Contact37.sln
 
     - name: Build solution
-      run: dotnet build .\Contact37.sln --configuration Release --no-restore
+      run: dotnet build Contact37.sln --configuration Release --no-restore
 
     - name: Run tests
-      run: dotnet test .\Contact37.sln --configuration Release --no-build --verbosity normal
+      run: dotnet test Contact37.sln --configuration Release --no-build --verbosity normal
