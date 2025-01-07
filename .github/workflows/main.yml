@@ -13,20 +13,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      mssql:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        env:
-          ACCEPT_EULA: "Y"
-          SA_PASSWORD: ${{ secrets.MSSQL_SA_PASSWORD }}
-        ports:
-          - 1433:1433
-        options: >-
-          --health-cmd "exit 0"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 3
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -43,4 +29,4 @@ jobs:
       run: dotnet build Contact37.sln --configuration Release --no-restore
 
     - name: Run tests
-      run: dotnet test Contact37.sln --configuration Release --no-build --verbosity normal
+      run: dotnet test ./Contact37.sln --configuration Release --no-restore --no-build --verbosity normal
