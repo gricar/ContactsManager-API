@@ -1,0 +1,38 @@
+name: Demo
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: List current directory
+      run: |
+        echo "Current directory:"
+        pwd
+        echo "Files and folders in the current directory:"
+        ls -la
+
+    - name: Restore dependencies
+      run: dotnet restore ./Contact37.sln
+
+    - name: Build solution
+      run: dotnet build ./Contact37.sln --configuration Release --no-restore
+
+    - name: Run tests
+      run: dotnet test ./Contact37.sln --configuration Release --no-restore --no-build --verbosity normal
