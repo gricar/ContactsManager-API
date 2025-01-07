@@ -1,9 +1,8 @@
 ﻿using Contacts37.Persistence;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Contacts37.Application.IntegrationTests
+namespace Contacts37.Application.IntegrationTests.Infrastructure
 {
     public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppFactory>
     {
@@ -18,8 +17,6 @@ namespace Contacts37.Application.IntegrationTests
             Sender = _scope.ServiceProvider.GetRequiredService<ISender>();
 
             DbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            DbContext.Database.Migrate();
         }
     }
 }
