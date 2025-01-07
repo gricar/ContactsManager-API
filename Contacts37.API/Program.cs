@@ -1,8 +1,7 @@
+using Contacts37.API.Extensions;
 using Contacts37.API.Middlewares;
 using Contacts37.Application.DependencyInjection;
-using Contacts37.Persistence;
 using Contacts37.Persistence.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using Serilog;
 
@@ -27,10 +26,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
+    app.ApplyMigrations();
 }
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
