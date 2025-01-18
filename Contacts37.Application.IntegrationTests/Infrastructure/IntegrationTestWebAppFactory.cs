@@ -1,4 +1,5 @@
 ﻿using Contacts37.Persistence;
+using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -17,6 +18,7 @@ namespace Contacts37.Application.IntegrationTests.Infrastructure
             _dbContainer = new MsSqlBuilder()
                 .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
                 .WithPassword("StrongP@ssword123!")
+                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
                 .Build();
         }
 
@@ -41,15 +43,7 @@ namespace Contacts37.Application.IntegrationTests.Infrastructure
             });
         }
 
-        public Task InitializeAsync()
-        {
-            return _dbContainer.StartAsync();
-        }
-
-
-        public new Task DisposeAsync()
-        {
-            return _dbContainer.StopAsync();
-        }
+        public Task InitializeAsync() => _dbContainer.StartAsync();
+        public new Task DisposeAsync() => _dbContainer.StopAsync();
     }
 }
