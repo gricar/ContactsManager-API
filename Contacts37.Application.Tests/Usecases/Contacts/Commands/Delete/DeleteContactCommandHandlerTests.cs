@@ -1,6 +1,6 @@
-﻿using Bogus;
-using Contacts37.Application.Common.Exceptions;
+﻿using Contacts37.Application.Common.Exceptions;
 using Contacts37.Application.Contracts.Persistence;
+using Contacts37.Application.Tests.Fixtures;
 using Contacts37.Application.Usecases.Contacts.Commands.Delete;
 using Contacts37.Domain.Entities;
 using FluentAssertions;
@@ -8,17 +8,18 @@ using Moq;
 
 namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Delete
 {
+    [Collection(nameof(ContactFixtureCollection))]
     public class DeleteContactCommandHandlerTests
     {
         private readonly Mock<IContactRepository> _contactRepositoryMock;
         private readonly DeleteContactCommandHandler _handler;
-        private readonly Faker _faker;
+        private readonly ContactFixture _fixture;
 
-        public DeleteContactCommandHandlerTests()
+        public DeleteContactCommandHandlerTests(ContactFixture fixture)
         {
             _contactRepositoryMock = new Mock<IContactRepository>();
             _handler = new DeleteContactCommandHandler(_contactRepositoryMock.Object);
-            _faker = new Faker();
+            _fixture = fixture;
         }
 
         [Fact(DisplayName = "Validate contact deletion when contact exists")]
@@ -26,12 +27,7 @@ namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Delete
         public async void DeleteContact_ShouldSucceed_WhenContactExists()
         {
             // Arrange
-            string name = _faker.Person.FirstName;
-            int dddCode = _faker.PickRandom(new[] { 11, 21, 31, 41 });
-            string phone = _faker.Phone.PhoneNumber("#########");
-            string email = _faker.Internet.Email();
-
-            var contact = Contact.Create(name, dddCode, phone, email);
+            var contact = _fixture.CreateValidContact();
 
             _contactRepositoryMock.Setup(repo => repo.GetAsync(contact.Id))
                 .ReturnsAsync(contact);
@@ -55,7 +51,7 @@ namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Delete
         public async void DeleteContact_ShouldThrowException_WhenContactDoesNotExists()
         {
             // Arrange
-            var contactId = _faker.Random.Guid();
+            var contactId = _fixture.CreateValidContact().Id;
 
             _contactRepositoryMock.Setup(repo => repo.GetAsync(contactId))
                 .ReturnsAsync((Contact)null);
