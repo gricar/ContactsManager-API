@@ -24,7 +24,7 @@ namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Delete
 
         [Fact(DisplayName = "Validate contact deletion when contact exists")]
         [Trait("Category", "Delete Contact - Success")]
-        public async void DeleteContact_ShouldSucceed_WhenContactExists()
+        public async Task DeleteContact_ShouldSucceed_WhenContactExists()
         {
             // Arrange
             var contact = _fixture.CreateValidContact();
@@ -48,7 +48,7 @@ namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Delete
 
         [Fact(DisplayName = "Validate contact deletion when contact does not exists")]
         [Trait("Category", "Delete Contact - Failure")]
-        public async void DeleteContact_ShouldThrowException_WhenContactDoesNotExists()
+        public async Task DeleteContact_ShouldThrowException_WhenContactDoesNotExists()
         {
             // Arrange
             var contactId = _fixture.CreateValidContact().Id;
