@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Bogus;
 using Contacts37.Application.Usecases.Contacts.Commands.Create;
+using Contacts37.Application.Usecases.Contacts.Commands.Update;
 using Contacts37.Domain.Entities;
 
 namespace Contacts37.Application.Tests.Fixtures
@@ -77,6 +78,48 @@ namespace Contacts37.Application.Tests.Fixtures
                 _faker.PickRandom(new[] { 11, 21, 31, 41 }),
                 _faker.Phone.PhoneNumber("###"),
                 _faker.Person.Email);
+        }
+
+        public UpdateContactCommand CreateValidUpdateContactCommand(Contact contact)
+        {
+            return new UpdateContactCommand(
+                contact.Id,
+                contact.Name,
+                contact.Region.DddCode,
+                contact.Phone,
+                contact.Email);
+        }
+
+        public UpdateContactCommand CreateValidUpdateContactCommandWithNewPhone(Contact contact)
+        {
+            return new UpdateContactCommand(
+                contact.Id,
+                contact.Name,
+                _faker.PickRandom(new[] { 11, 21, 31, 41 }),
+                _faker.Phone.PhoneNumber("###"),
+                contact.Email);
+        }
+
+        public UpdateContactCommand CreateValidUpdateContactCommandForNonExistentContact()
+        {
+            var contact = CreateValidContact();
+
+            return new UpdateContactCommand(
+                contact.Id,
+                contact.Name,
+                contact.Region.DddCode,
+                contact.Phone,
+                contact.Email);
+        }
+
+        public UpdateContactCommand CreateInvalidUpdateContactCommandWithInvalidEmail(Contact contact)
+        {
+            return new UpdateContactCommand(
+                contact.Id,
+                contact.Name,
+                contact.Region.DddCode,
+                contact.Phone,
+                "invalid_email");
         }
     }
 }
