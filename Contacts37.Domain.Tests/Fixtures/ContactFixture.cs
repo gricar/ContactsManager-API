@@ -18,7 +18,7 @@ namespace Contacts37.Domain.Tests.Fixtures
                 _faker.Person.FirstName,
                 _faker.PickRandom(new[] { 11, 21, 31, 41 }),
                 _faker.Phone.PhoneNumber("#########"),
-                _faker.Internet.Email());
+                _faker.Person.Email);
         }
     }
 }
