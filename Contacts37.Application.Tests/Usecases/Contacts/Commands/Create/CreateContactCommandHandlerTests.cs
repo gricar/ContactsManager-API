@@ -124,10 +124,8 @@ namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Create
         public async Task CreateContact_ShouldThrowException_WhenNameIsInvalid()
         {
             // Arrange
-            var command = _fixture.CreateInvalidContactCommandWithInvalidName();
+            var command = _fixture.CreateContactCommandWithInvalidData();
 
-            _contactRepositoryMock.Setup(repo => repo.IsEmailUniqueAsync(command.Email!))
-                .ReturnsAsync(true);
             _contactRepositoryMock.Setup(repo => repo.IsDddAndPhoneUniqueAsync(command.DDDCode, command.Phone))
                 .ReturnsAsync(true);
 
@@ -138,7 +136,6 @@ namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Create
             await act.Should().ThrowAsync<InvalidNameException>()
                 .WithMessage("Name is required.");
 
-            _contactRepositoryMock.Verify(repo => repo.IsEmailUniqueAsync(command.Email!), Times.Once);
             _contactRepositoryMock.Verify(repo => repo.IsDddAndPhoneUniqueAsync(command.DDDCode, command.Phone), Times.Once);
             _contactRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<Contact>()), Times.Never);
         }
@@ -148,7 +145,9 @@ namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Create
         public async Task CreateContact_ShouldThrowException_WhenEmailIsInvalid()
         {
             // Arrange
-            var command = _fixture.CreateInvalidContactCommandWithInvalidEmail();
+            var invalidEmail = "invalid_email";
+            var contact = _fixture.CreateValidContact();
+            var command = _fixture.CreateContactCommandWithInvalidData(contact.Name, contact.Region.DddCode, contact.Phone, invalidEmail);
 
             _contactRepositoryMock.Setup(repo => repo.IsEmailUniqueAsync(command.Email!))
                 .ReturnsAsync(true);
@@ -172,10 +171,9 @@ namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Create
         public async Task CreateContact_ShouldThrowException_WhenPhoneIsInvalid()
         {
             // Arrange
-            var command = _fixture.CreateInvalidContactCommandWithInvalidPhone();
+            var contact = _fixture.CreateValidContact();
+            var command = _fixture.CreateContactCommandWithInvalidData(contact.Name);
 
-            _contactRepositoryMock.Setup(repo => repo.IsEmailUniqueAsync(command.Email!))
-                .ReturnsAsync(true);
             _contactRepositoryMock.Setup(repo => repo.IsDddAndPhoneUniqueAsync(command.DDDCode, command.Phone))
                 .ReturnsAsync(true);
 
@@ -186,7 +184,6 @@ namespace Contacts37.Application.Tests.Usecases.Contacts.Commands.Create
             await act.Should().ThrowAsync<InvalidPhoneNumberException>()
                 .WithMessage($"Phone '{command.Phone}' must be a 9-digit number.");
 
-            _contactRepositoryMock.Verify(repo => repo.IsEmailUniqueAsync(command.Email!), Times.Once);
             _contactRepositoryMock.Verify(repo => repo.IsDddAndPhoneUniqueAsync(command.DDDCode, command.Phone), Times.Once);
             _contactRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<Contact>()), Times.Never);
         }

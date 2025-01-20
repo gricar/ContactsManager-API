@@ -2,6 +2,8 @@
 using Bogus;
 using Contacts37.Application.Usecases.Contacts.Commands.Create;
 using Contacts37.Application.Usecases.Contacts.Commands.Update;
+using Contacts37.Application.Usecases.Contacts.Queries.GetAll;
+using Contacts37.Application.Usecases.Contacts.Queries.GetByDdd;
 using Contacts37.Domain.Entities;
 
 namespace Contacts37.Application.Tests.Fixtures
@@ -10,21 +12,41 @@ namespace Contacts37.Application.Tests.Fixtures
     {
         public IMapper Mapper { get; }
         private readonly Faker _faker;
+        private readonly IEnumerable<int> ValidDddCodes;
 
         public ContactFixture()
         {
-            var config = new MapperConfiguration(cfg => cfg.AddProfile<CreateContactMapper>());
-            Mapper = new Mapper(config);
+            Mapper = ConfigureMapper();
             _faker = new Faker();
+
+            ValidDddCodes = new[] { 11, 21, 31, 41 };
+        }
+
+        private static IMapper ConfigureMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<CreateContactMapper>();
+                cfg.AddProfile<GetAllContactsMapper>();
+                cfg.AddProfile<GetContactsByDddMapper>();
+            });
+            return new Mapper(config);
         }
 
         public Contact CreateValidContact()
         {
             return Contact.Create(
                 _faker.Person.FirstName,
-                _faker.PickRandom(new[] { 11, 21, 31, 41 }),
+                _faker.PickRandom(ValidDddCodes),
                 _faker.Phone.PhoneNumber("#########"),
                 _faker.Person.Email);
+        }
+
+        public IEnumerable<Contact> CreateValidContactList(int count = 5)
+        {
+            return Enumerable.Range(1, count)
+              .Select(_ => CreateValidContact())
+              .ToList();
         }
 
         public CreateContactCommand CreateContactCommandFromEntity(Contact contact)
@@ -40,44 +62,26 @@ namespace Contacts37.Application.Tests.Fixtures
         {
             return new CreateContactCommand(
                 _faker.Person.FirstName,
-                _faker.PickRandom(new[] { 11, 21, 31, 41 }),
+                _faker.PickRandom(ValidDddCodes),
                 _faker.Phone.PhoneNumber("#########"),
                 _faker.Person.Email);
+        }
+
+        public CreateContactCommand CreateContactCommandWithInvalidData(string? name = null, int? dddCode = null, string? phone = null, string? email = null)
+        {
+            return new CreateContactCommand(
+                name ?? " ",
+                dddCode ?? _faker.PickRandom(ValidDddCodes),
+                phone ?? _faker.Phone.PhoneNumber("###"),
+                email);
         }
 
         public CreateContactCommand CreateValidContactCommandWithEmailNull()
         {
             return new CreateContactCommand(
                 _faker.Person.FirstName,
-                _faker.PickRandom(new[] { 11, 21, 31, 41 }),
+                _faker.PickRandom(ValidDddCodes),
                 _faker.Phone.PhoneNumber("#########"));
-        }
-
-        public CreateContactCommand CreateInvalidContactCommandWithInvalidEmail()
-        {
-            return new CreateContactCommand(
-                _faker.Person.FirstName,
-                _faker.PickRandom(new[] { 11, 21, 31, 41 }),
-                _faker.Phone.PhoneNumber("#########"),
-                "invalid_email");
-        }
-
-        public CreateContactCommand CreateInvalidContactCommandWithInvalidName()
-        {
-            return new CreateContactCommand(
-                " ",
-                _faker.PickRandom(new[] { 11, 21, 31, 41 }),
-                _faker.Phone.PhoneNumber("#########"),
-                _faker.Person.Email);
-        }
-
-        public CreateContactCommand CreateInvalidContactCommandWithInvalidPhone()
-        {
-            return new CreateContactCommand(
-                _faker.Person.FirstName,
-                _faker.PickRandom(new[] { 11, 21, 31, 41 }),
-                _faker.Phone.PhoneNumber("###"),
-                _faker.Person.Email);
         }
 
         public UpdateContactCommand CreateValidUpdateContactCommand(Contact contact)
@@ -95,7 +99,7 @@ namespace Contacts37.Application.Tests.Fixtures
             return new UpdateContactCommand(
                 contact.Id,
                 contact.Name,
-                _faker.PickRandom(new[] { 11, 21, 31, 41 }),
+                _faker.PickRandom(ValidDddCodes),
                 _faker.Phone.PhoneNumber("###"),
                 contact.Email);
         }
