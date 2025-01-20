@@ -1,0 +1,79 @@
+services:
+  contacts37.api:
+    image: ${DOCKER_REGISTRY-}contacts37api
+    container_name: contacts37-api
+    build:
+      context: .
+      dockerfile: Contacts37.API/Dockerfile
+    ports:
+      - "7202:7202"
+    depends_on: [contacts37.database, contacts37.seq_logs]
+    restart: unless-stopped
+    networks:
+      - contacts-network
+
+  contacts37.database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: contacts37-database
+    hostname: mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=P@ssw0rd1
+      - MSSQL_PID=Express
+    ports:
+      - "1410:1433"
+    volumes:
+      - sql-data:/var/opt/mssql
+    restart: unless-stopped
+    networks:
+      - contacts-network
+
+  contacts37.seq_logs:
+    image: datalust/seq
+    container_name: contacts37-logs
+    hostname: seq-logs
+    environment:
+      - ACCEPT_EULA=Y
+    volumes:
+      - seq-data:/data
+    ports:
+      - "5342:80"
+    restart: unless-stopped
+    networks:
+      - contacts-network
+
+  contacts37.prometheus:
+    image: prom/prometheus:latest
+    container_name: contacts37-prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    networks:
+      - contacts-network
+
+  contacts37.grafana:
+    image: grafana/grafana:latest
+    container_name: contacts37-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - contacts-network
+
+networks:
+  contacts-network:
+    driver: bridge
+
+volumes:
+  sql-data:
+  seq-data:
+  prometheus-data:
+  grafana-data:
