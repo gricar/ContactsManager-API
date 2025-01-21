@@ -25,3 +25,6 @@ Este projeto segue os princípios da Clean Architecture, dividindo o código em 
 - **Application**: Contém os casos de uso (Use Cases) e os serviços de aplicação.
 - **Infrastructure**: Implementação de serviços externos, como persistência de dados, integração com APIs, etc.
 - **API**: Contém os controladores (Controllers) e configurações da API.
+
+***
+> Acesse a seção de [Wiki](https://github.com/gricar/ContactsManager-API/wiki) para mais detalhes técnicos da aplicação
